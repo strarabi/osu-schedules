@@ -2,11 +2,7 @@ import csv
 from flask import Flask, render_template
 app = Flask(__name__)
 
-dict_out = {}
-
-with open('fa22_data.csv', mode='r') as inp:
-    reader = csv.reader(inp)
-    dict_out = {rows[0]:rows[1] for rows in reader}
+curr_classes = []
 
 @app.route("/")
 @app.route("/main")
