@@ -3,6 +3,7 @@
 <head>
     <link rel="stylesheet" href="./static/style.css">
     <script src="./static/index.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,7 @@
     </div>
     <h1>OSU Schedule Builder</h1>
     <p>Input the classes you want to take and this tool will build you a schedule.</p>
-    <button type="button" class="generate-button">Generate a Schedule</button>
+    <button type="button" id="generate-button">Generate a Schedule</button>
 
     <input name="search" list="courses" placeholder="Search for a class..."/>
     <datalist id="courses"></datalist>
@@ -27,6 +28,9 @@
     <select name="Term" id="term-selection">
         <option value="fa22">Fall 2022</option>
     </select>
+
+    <p id="classes-info">Your classes:</p>
+    <button type="button" id="clear-button">Clear Schedule</button>
 
 </body>
 </html>
