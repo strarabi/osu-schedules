@@ -17,8 +17,15 @@ window.onload = function() {
             $.post("/postmethod", {
                 javascript_data: this.value
             })
-            var classes_info = document.getElementById('classes-info')
-            classes_info.innerHTML += (" " + this.value)
+            var new_div = document.createElement('div')
+            new_div.classList.add('classes-info')
+            new_div.textContent = (" " + this.value)
+            new_div.addEventListener('click', function() {
+                console.log("Clicked")
+            })
+            var div_container = document.getElementsByClassName('classes-container')[0]
+            div_container.appendChild(new_div)
+            console.log(new_div, div_container)
         }
     }
     generate_button = document.getElementById('generate-button')
@@ -29,7 +36,9 @@ window.onload = function() {
     clear_button = document.getElementById('clear-button')
     clear_button.addEventListener('click', function() {
         $.post("/clear")
-        var classes_info = document.getElementById('classes-info')
-        classes_info.innerHTML = "Your classes: "
+        var courses_picked = document.querySelectorAll(".classes-info")
+        courses_picked.forEach(course => {
+            course.remove()
+        })
     })
 }

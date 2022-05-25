@@ -1,0 +1,11 @@
+.classes-info {
+    border:1px solid black;
+    display:inline-block;
+    padding:5px;
+    margin:5px;
+}
+
+.classes-info:hover {
+    color:red;
+    cursor:pointer;
+}
