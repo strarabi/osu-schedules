@@ -1,7 +1,6 @@
 import csv
 from flask import Flask, redirect, render_template, request
 import json
-from Schedule import Schedule
 
 app = Flask(__name__)
 
@@ -37,13 +36,15 @@ def get_ajax_data():
 @app.route("/generate", methods=['POST'])
 def generate_schedule():
 
-    course_all_times = []
+    all_courses_times = [] # each index is an list of times representing all the times a particular class is offered
     for course in curr_classes:
-        course_all_times.append(csv_dict[course.rstrip()])
+        all_courses_times.append((csv_dict[course.rstrip()]).replace("'", ""))
+    all_courses_list = []
+    for course in all_courses_times:
+        all_courses_list.append(course.strip('][').split(', '))
+    print(all_courses_list)
 
-    s = Schedule(course_all_times)
 
-    s.populate_lists()
     return render_template('index.html')
 
 @app.route("/clear", methods=['POST'])
@@ -54,4 +55,4 @@ def clear_schedule():
     return render_template('index.html')
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

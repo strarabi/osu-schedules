@@ -21,7 +21,7 @@ window.onload = function() {
             new_div.classList.add('classes-info')
             new_div.textContent = (" " + this.value)
             new_div.addEventListener('click', function() {
-                console.log("Clicked")
+                console.log("Clicked") // TODO: remove from DOM, remove from server.py
             })
             var div_container = document.getElementsByClassName('classes-container')[0]
             div_container.appendChild(new_div)
