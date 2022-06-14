@@ -1,12 +1,16 @@
 import csv
 from flask import Flask, redirect, render_template, request
+from schedule_tools import is_valid_schedule
+import itertools
+import numpy as np
 import json
 
 app = Flask(__name__)
 
 csv_dict = {}
 
-with open('fa22_data.csv', mode='r') as inp:
+
+with open('./data/fa22/fa22_data.csv', mode='r') as inp:
     reader = csv.reader(inp)
     csv_dict = {rows[0]:rows[1] for rows in reader}
 
@@ -35,15 +39,18 @@ def get_ajax_data():
 
 @app.route("/generate", methods=['POST'])
 def generate_schedule():
-
-    all_courses_times = [] # each index is an list of times representing all the times a particular class is offered
-    for course in curr_classes:
-        all_courses_times.append((csv_dict[course.rstrip()]).replace("'", ""))
     all_courses_list = []
-    for course in all_courses_times:
-        all_courses_list.append(course.strip('][').split(', '))
-    print(all_courses_list)
+    for course in curr_classes:
+        all_courses_list.append((csv_dict[course.rstrip()]).replace("'", "").strip('][').split(', '))
+    
+    all_combinations = list(itertools.product(*all_courses_list))
 
+
+    for combination in all_combinations:
+        if is_valid_schedule(combination):
+            pass
+        else:
+            pass
 
     return render_template('index.html')
 
