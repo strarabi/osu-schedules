@@ -40,9 +40,9 @@ def is_valid_schedule(schedule):
             elif day == 'U':
                 sunday_courses.append(time_range)
 
-        # Create 2D array where each index is an array of minute ranges for a particular day.
-        week_schedule = [monday_courses, tuesday_courses, wednesday_courses, 
-        thursday_courses, friday_courses, saturday_courses, sunday_courses]
+    # Create 2D array where each index is an array of minute ranges for a particular day.
+    week_schedule = [monday_courses, tuesday_courses, wednesday_courses, 
+    thursday_courses, friday_courses, saturday_courses, sunday_courses]
 
     for day in week_schedule:
         day.sort()

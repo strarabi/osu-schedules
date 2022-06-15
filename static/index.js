@@ -17,8 +17,8 @@ window.onload = function() {
     // When the user adds a new class, send it to the backend
     document.querySelector('input').oninput = function() {
         if (all_courses.includes(this.value)) {
-            $.post("/postmethod", {
-                javascript_data: this.value
+            $.post("/addcourse", {
+                course: this.value
             })
             // Display the new class that the user has added on the page
             var new_div = document.createElement('div')
@@ -35,7 +35,15 @@ window.onload = function() {
     // making appropriate requests to the backend.
     generate_button = document.getElementById('generate-button')
     generate_button.addEventListener('click', function() {
-        $.post("/generate")
+        var xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var response = xhr.responseText
+                alert(response)
+            }
+        }
+        xhr.open("GET", "/generate")
+        xhr.send()
     })
 
     clear_button = document.getElementById('clear-button')

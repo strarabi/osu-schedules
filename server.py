@@ -1,5 +1,5 @@
 import csv
-from flask import Flask, redirect, render_template, request
+from flask import Flask, render_template, request
 from schedule_tools import is_valid_schedule
 import itertools
 import numpy as np
@@ -34,17 +34,17 @@ def about():
 # This post method is sent from the browser when
 # a user adds a course, and it appends this course
 # to curr_classes.
-@app.route('/postmethod', methods=['POST'])
+@app.route('/addcourse', methods=['POST'])
 def get_ajax_data():
-    js_data = request.form['javascript_data']
-    curr_classes.append(js_data)
+    course = request.form['course']
+    curr_classes.append(course)
     return render_template('index.html')
 
 # This post request is fired when the user clicks the 
 # Generate Schedule button. It uses the cartesian product
 # to find all possible schedule combinations, then uses the
 # is_valid_schedule() function to find a valid one.
-@app.route("/generate", methods=['POST'])
+@app.route("/generate", methods=['GET'])
 def generate_schedule():
     all_courses_list = []
     for course in curr_classes:
@@ -52,20 +52,14 @@ def generate_schedule():
     
     all_combinations = list(itertools.product(*all_courses_list))
 
-    schedule_generated = False
     for combination in all_combinations:
         if is_valid_schedule(combination):
-            print("Found Valid Schedule")
+            schedule_str = ""
             for i in range(0, len(combination)):
-                print(curr_classes[i], " at ", combination[i])
-                schedule_generated = True
-            break
-        else:
-            pass
-    if not schedule_generated:
-        print("Could not generate a schedule from the given courses.")
-
-    return render_template('index.html')
+                schedule_str += (curr_classes[i] + " at " + combination[i] + '\n')
+            print(schedule_str.rstrip())
+            return schedule_str.rstrip()
+    return "Could not generate a schedule from the selected courses."
 
 # Clears the curr_classes list.
 @app.route("/clear", methods=['POST'])

@@ -40,5 +40,11 @@
         <button type="button" class="button" id="clear-button">Clear Schedule</button>
     </div>
 
+    <div class="generated-schedule">
+        {% if schedule %}
+        <p id="schedule-text">Your generated schedule: {{ schedule }}</p>
+        {% endif %}
+    </div>
+
 </body>
 </html>
