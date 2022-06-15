@@ -1,3 +1,7 @@
+a {
+    text-decoration: none;
+}
+
 .classes-info {
     border:1px solid black;
     display:inline-block;
@@ -9,3 +13,52 @@
     color:red;
     cursor:pointer;
 }
+
+.navbar {
+    background-color: orangered;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.navlist {
+    margin: 0 0 0 20px;
+    padding: 0;
+}
+
+.navitem {
+    display:inline-block;
+    text-decoration: none;
+}
+
+.title {
+    text-align: center;
+}
+
+.osulogo {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.tools {
+    text-align: center;
+}
+
+.button {
+    border: none;
+    background: none;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgb(242, 94, 19);
+    padding: 15px 40px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .button:hover {
+    color: rgba(255, 255, 255, 1);
+    box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
+    cursor: pointer;
+  }
