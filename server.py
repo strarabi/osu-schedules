@@ -3,8 +3,6 @@ from flask import Flask, render_template, request, session
 from flask_session import Session
 from schedule_tools import is_valid_schedule
 import itertools
-import numpy as np
-import json
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
@@ -14,7 +12,7 @@ Session(app)
 csv_dict = {}
 
 # Read CSV data and create dict
-with open('./data/fa22/fa22_data.csv', mode='r') as inp:
+with open(r'./data/fa22/fa22_data.csv', mode='r') as inp:
     reader = csv.reader(inp)
     csv_dict = {rows[0]:rows[1] for rows in reader}
 
