@@ -2,6 +2,10 @@ a {
     text-decoration: none;
 }
 
+html {
+    background-image: url("./imgs/background.jpg");
+}
+
 .classes-info {
     border:1px solid black;
     display:inline-block;

@@ -38,6 +38,12 @@ def get_ajax_data():
     session['curr_classes'].append(course)
     return render_template('index.html')
 
+@app.route("/removecourse", methods=['POST'])
+def remove_course():
+    if request.form['course'].strip() in session['curr_classes']:
+        session['curr_classes'].remove(request.form['course'].strip())
+    return render_template('index.html')
+
 # This post request is fired when the user clicks the 
 # Generate Schedule button. It uses the cartesian product
 # to find all possible schedule combinations, then uses the

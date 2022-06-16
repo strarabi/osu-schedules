@@ -20,7 +20,7 @@ def is_valid_schedule(schedule):
         time_range = split_course[1].split('-')
         add = 12 if ('p' in time_range[1]) else 0
 
-        time_range[1] = time_range[1].replace('a', "").replace('p', "")
+        time_range[1] = time_range[1].replace('a', "").replace('p', "").replace(";", "")
         time_range = [time_to_minutes(time_range[0], add), time_to_minutes(time_range[1], add)]
 
         # Append minute ranges to daily schedules
