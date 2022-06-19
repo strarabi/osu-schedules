@@ -14,15 +14,6 @@
     <div class="title">
         <h1>Beaver Builder</h1>
     </div>
-    <div class="osulogo">
-        <!-- <img src="./static/imgs/osu_logo.png" alt="Oregon State Logo"/> -->
-    </div>
-    <!-- <div class="navbar">
-        <ul class="navlist">
-            <li class="navitem"><a href="/about">About</a></li>
-            <li class="navitem"><a href="/main">Schedule Builder</a></li>
-        </ul>
-    </div> -->
     <div class="tools">
         <p>Input the classes you want to take and this tool will build you a schedule.</p>
 
@@ -39,13 +30,5 @@
     </div>
     <button type="button" class="button" id="generate-button">Generate a Schedule</button>
     <button type="button" class="button" id="clear-button">Clear Schedule</button>
-
-
-    <div class="generated-schedule">
-        {% if schedule %}
-        <p id="schedule-text">Your generated schedule: {{ schedule }}</p>
-        {% endif %}
-    </div>
-
 </body>
 </html>
