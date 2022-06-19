@@ -1,8 +1,9 @@
 import csv
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, send_from_directory
 from flask_session import Session
 from schedule_tools import is_valid_schedule
 import itertools
+import os
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
@@ -70,6 +71,12 @@ def generate_schedule():
 def clear_schedule():
     session['curr_classes'] = []
     return render_template('index.html')
+
+# Serves the favicon.ico (website image)
+@app.route("/favicon.ico")
+def favicon():
+    path = os.path.join(app.root_path, 'static', 'imgs')
+    return send_from_directory(path, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == "__main__":
     app.run(debug=True)
