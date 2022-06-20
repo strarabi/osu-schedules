@@ -1,5 +1,5 @@
 import csv
-from flask import Flask, render_template, request, session, send_from_directory
+from flask import Flask, render_template, request, session, send_from_directory, jsonify
 from flask_session import Session
 from schedule_tools import is_valid_schedule
 import itertools
@@ -71,6 +71,15 @@ def generate_schedule():
 def clear_schedule():
     session['curr_classes'] = []
     return render_template('index.html')
+
+# Given a term (fa22/wi22/sp22/etc) this endpoint
+# returns a list of all the courses offered for this
+# term.
+@app.route("/offerings", methods=['POST'])
+def get_course_offerings():
+    term = request.form["term"]
+    path_to_file = os.path.join(app.root_path, 'data', term, '{}_offerings.txt'.format(term))
+    return  jsonify(open(path_to_file).read().splitlines())
 
 # Serves the favicon.ico (website image)
 @app.route("/favicon.ico")
