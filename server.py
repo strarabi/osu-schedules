@@ -12,10 +12,14 @@ Session(app)
 
 csv_dict = {}
 
-# Read CSV data and create dict
-with open(r'./data/fa22/fa22_data.csv', mode='r') as inp:
+# Read CSV data and create dicts
+with open(r'./data/fa22_data.csv', mode='r') as inp:
     reader = csv.reader(inp)
-    csv_dict = {rows[0]:rows[1] for rows in reader}
+    fa22_dict = {rows[0]:rows[1] for rows in reader}
+
+with open(r'./data/wi23_data.csv', mode='r') as inp:
+    reader = csv.reader(inp)
+    wi23_dict = {rows[0]:rows[1] for rows in reader}
 
 # Main route for the app, this displays the page where a user
 # can build a schedule.
@@ -49,8 +53,15 @@ def remove_course():
 # Generate Schedule button. It uses the cartesian product
 # to find all possible schedule combinations, then uses the
 # is_valid_schedule() function to find a valid one.
-@app.route("/generate", methods=['GET'])
+@app.route("/generate", methods=['GET', 'POST'])
 def generate_schedule():
+    term = request.form["term"]
+    if term == "fa22":
+        csv_dict = fa22_dict
+    elif term == "wi23":
+        csv_dict = wi23_dict
+    else:
+        print("ERROR: term not found")
     all_courses_list = []
     for course in session['curr_classes']:
         all_courses_list.append((csv_dict[course.rstrip()]).replace("'", "").strip('][').split(', '))
@@ -78,8 +89,11 @@ def clear_schedule():
 @app.route("/offerings", methods=['POST'])
 def get_course_offerings():
     term = request.form["term"]
-    path_to_file = os.path.join(app.root_path, 'data', term, '{}_offerings.txt'.format(term))
-    return  jsonify(open(path_to_file).read().splitlines())
+    path_to_file = os.path.join(app.root_path, 'data', '{}_data.csv'.format(term))
+    with open(path_to_file) as inp:
+        reader = csv.reader(inp)
+        dict = {rows[0]:rows[1] for rows in reader}
+    return jsonify(list(dict.keys()))
 
 # Serves the favicon.ico (website image)
 @app.route("/favicon.ico")

@@ -39,15 +39,10 @@ window.onload = function() {
     // making appropriate requests to the backend.
     generate_button = document.getElementById('generate-button')
     generate_button.addEventListener('click', function() {
-        var xhr = new XMLHttpRequest()
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                var response = xhr.responseText
-                alert(response)
-            }
-        }
-        xhr.open("GET", "/generate")
-        xhr.send()
+        response = $.post('/generate', {
+            term: document.getElementById('term-selection').value
+        })
+        alert(response.responseText)
     })
 
     clear_button = document.getElementById('clear-button')
