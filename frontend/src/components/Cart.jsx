@@ -5,6 +5,7 @@ export default function Cart(props) {
 
     return (
         <div css={cartStyles}>
+            <span css = {cartTextStyles}>Select classes and they will show up here: <br></br><br></br></span>
             <span css = {cartTextStyles}> Cart </span>
             <i className="fa fa-shopping-cart"></i>
             {props.courses}

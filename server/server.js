@@ -23,7 +23,6 @@ app.get('/api/get_courses_by_term/:term', async function(req, res) {
 
 app.post('/api/build_schedule', function(req, res) {
     build_schedule(req.body.courses).then((schedule) => {
-        console.log(schedule)
         res.status(200).send(schedule)
     })
 })

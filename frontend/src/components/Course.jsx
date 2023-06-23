@@ -4,7 +4,7 @@ import { css } from '@emotion/react'
 export default function Course(props) {
     return (
         <div css={courseContainerStyles}>
-            <p css={courseStyles}>{props.name}</p>
+            <p onClick={() => props.removeCourse(props.name)} css={courseStyles}>{props.name}</p>
         </div>
     )
 }
@@ -20,4 +20,8 @@ const courseStyles = css`
     font-family: 'Arvo', serif;
     font-weight: bold;
     text-align: center;
+    cursor: pointer;
+    :hover {
+        color: red;
+    }
 `

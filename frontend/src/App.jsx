@@ -17,6 +17,10 @@ function App() {
   const [courses, setCourses] = useState([])
   const [term, setTerm] = useState("")
 
+  const getPrettyName = (course) => {
+    return `${course.course_name} ${schedule_type_to_text[course.schedule_type]}`
+  }
+
   const clearCart = () => {
     setCourses([])
   }
@@ -25,20 +29,28 @@ function App() {
     setCourses(courses => [...courses, course])
   }
 
+  const removeCourse = (course_name) => {
+    setCourses(
+      courses => courses.filter(function(course) {
+        console.log(course.course_name, course_name)
+        return getPrettyName(course) !== course_name
+      })
+    )
+  }
+
   const buildSchedule = async (courses) => {
     const response = await fetch(`http://localhost:3001/api/build_schedule/`, {
       method: 'POST', 
       headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, 
       body: JSON.stringify({courses: courses}), method: 'POST',
     });
-    const jsonData = await response.json();
-    console.log(jsonData)
+    const jsonData = await response.json()
     alert(JSON.stringify(jsonData))
   }
 
   const course_objs = []
   for (let course of courses) {
-    course_objs.push(<Course name={`${course.course_name} ${schedule_type_to_text[course.schedule_type]}`}/>)
+    course_objs.push(<Course removeCourse={removeCourse} name={getPrettyName(course)}/>)
   }
 
   return (

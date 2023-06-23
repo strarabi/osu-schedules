@@ -3,7 +3,7 @@ import { css } from '@emotion/react'
 import Select from 'react-select'
 import { useState, useEffect } from 'react'
 
-const term_options = ['Fall 2024', 'Winter 2024', 'Summer 2023']
+const term_options = ['Fall 2023', 'Winter 2024', 'Summer 2023']
 
 const term_to_code = {
     0: '202401',
@@ -27,23 +27,23 @@ export default function CourseSearch(props) {
 
     const changeTerm = async () => {
         props.clearCart()
-        const nextTerm = (term + 1) % term_options.length;
-        setTerm(nextTerm);
-        props.setTerm(term_options[nextTerm]);
+        const nextTerm = (term + 1) % term_options.length
+        setTerm(nextTerm)
+        props.setTerm(term_options[nextTerm])
 
-        const response = await fetch(`http://localhost:3001/api/get_courses_by_term/${term_to_code[nextTerm]}`);
-        const jsonData = await response.json();
+        const response = await fetch(`http://localhost:3001/api/get_courses_by_term/${term_to_code[nextTerm]}`)
+        const jsonData = await response.json()
 
         const newOptions = jsonData.map((course) => {
-            const pretty_name = `${course.course_name} ${schedule_type_to_text[course.schedule_type]}`;
-            return { value: course, label: pretty_name };
+            const pretty_name = `${course.course_name} ${schedule_type_to_text[course.schedule_type]}`
+            return { value: course, label: pretty_name }
         });
 
         setOptions(newOptions);
     };
 
     useEffect(() => {
-        changeTerm();
+        changeTerm()
     }, []);
 
     return (
