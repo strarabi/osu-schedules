@@ -5,6 +5,8 @@ import CourseSearch from './components/CourseSearch'
 import Cart from './components/Cart'
 import Course from './components/Course'
 import { useState } from 'react'
+import WeekCalendar from './components/WeekCalendar'
+import moment from 'moment'
 
 const schedule_type_to_text = {
   A: 'Lecture',
@@ -80,13 +82,22 @@ function App() {
     course_objs.push(<Course removeCourse={removeCourse} name={getPrettyName(course)}/>)
   }
 
+  let events =  [
+    {
+    title: 'Monday Event',
+    start: moment().day('Monday').hour(10).minute(0).second(0).toDate(),
+    end: moment().day('Monday').hour(12).minute(0).second(0).toDate(),
+    }
+  ]
+
   return (
     <div className='app-container'>
-      <Navbar/>
+      {/* <Navbar/>
       <h1 css={sloganStyles}>build your <br/>perfect schedule</h1>
       <CourseSearch clearCart={clearCart} callback={handleCourseAdd} setTerm={setTerm}/>
       <Cart courses={course_objs}/>
-      <button css = {buttonStyle} onClick={() => buildSchedule(courses)}>Generate schedule</button>
+      <button css = {buttonStyle} onClick={() => buildSchedule(courses)}>Generate schedule</button> */}
+      <WeekCalendar events={events}/>
     </div>
   )
 }
