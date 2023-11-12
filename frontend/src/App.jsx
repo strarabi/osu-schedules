@@ -12,6 +12,10 @@ const schedule_type_to_text = {
   D: 'Lab',
 }
 
+const term_name_to_code = {
+  "Winter 2022": "202402"
+}
+
 function App() {
 
   const [courses, setCourses] = useState([])
@@ -25,7 +29,30 @@ function App() {
     setCourses([])
   }
 
-  const handleCourseAdd = (course) => {
+  const handleCourseAdd = async(course) => {
+    console.log(term)
+    if (course.schedule_type == 'A') {
+        // if there exists a course with the same name and schedule type of C or D,
+        // alert the user
+        const recResponse = await fetch(`http://localhost:3001/api/course_exists/`, {
+          method: 'POST', 
+          headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, 
+          body: JSON.stringify({course_name: course.course_name, term: term_name_to_code[term], schedule_type: 'C'}), method: 'POST',
+        });
+        const recitationExists = await recResponse.json()
+        if (recitationExists) {
+          alert("Recitation exists!")
+        }
+        const labResponse = await fetch(`http://localhost:3001/api/course_exists/`, {
+          method: 'POST', 
+          headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, 
+          body: JSON.stringify({course_name: course.course_name, term: term_name_to_code[term], schedule_type: 'D'}), method: 'POST',
+        });
+        const labExists = await labResponse.json()
+        if (labExists) {
+          alert("Lab exists!")
+        }
+    }
     setCourses(courses => [...courses, course])
   }
 
@@ -38,7 +65,7 @@ function App() {
     )
   }
 
-  const buildSchedule = async (courses) => {
+  const buildSchedule = async(courses) => {
     const response = await fetch(`http://localhost:3001/api/build_schedule/`, {
       method: 'POST', 
       headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, 
@@ -80,8 +107,7 @@ const buttonStyle = css`
   cursor: pointer;
 
   margin: 0;
-  position: absolute;
-  top: 50%;
+  position: fixed;
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);

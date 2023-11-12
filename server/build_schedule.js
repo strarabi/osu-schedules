@@ -57,7 +57,7 @@ export async function build_schedule(courses) {
         const result = await collection.find(query).toArray()
         
         if (result) {
-            course_times.push(result[0].times_offered)
+            course_times.push({course_time: result[0].times_offered, course_name: result[0].course_name, schedule_type: course.schedule_type})
         }
     }
 
@@ -83,8 +83,13 @@ export async function build_schedule(courses) {
  */
 function is_valid_schedule(schedule) {
     const daysMap = { M: [], T: [], W: [], R: [], F: [], S: [], U: [] };
+    const course_times = []
+
+    for (let course of schedule) {
+        course_times.push(course.course_time)
+    }
   
-    schedule.forEach((course) => {
+    course_times.forEach((course) => {
       const [days, time] = course.split(" ");
   
       for (const day of days) {
@@ -125,9 +130,20 @@ function is_valid_schedule(schedule) {
  * @param {Array} current 
  * @returns {Array}
  */
-function cartesian(list, n = 0, result = [], current = []){
-    if (n === list.length) result.push(current)
-    else list[n].forEach(item => cartesian(list, n+1, result, [...current, item]))
- 
-    return result
+function cartesian(list, n = 0, result = [], current = []) {
+    if (n === list.length) {
+        result.push(current);
+    } else {
+        const currentObj = list[n];
+        const currentList = Array.isArray(currentObj.course_time) ? currentObj.course_time : [currentObj.course_time];
+
+        currentList.forEach(item => {
+            cartesian(list, n + 1, result, [
+                ...current,
+                { course_name: currentObj.course_name, course_time: item, schedule_type: currentObj.schedule_type }
+            ]);
+        });
+    }
+
+    return result;
 }

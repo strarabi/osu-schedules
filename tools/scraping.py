@@ -77,7 +77,7 @@ def populate_db() -> None:
     Populates MongoDB database with course offerings.
     """
     all_courses = open('allcourses.txt').read().splitlines()  # get list of courses offered at OSU
-    for term in ["202400", "202401", "202402"]:
+    for term in ["202402"]:
         for schedule_type in ["A", "C", "D"]:
             for course_name in all_courses:
                 times_offered = get_course_times(course_name, term, schedule_type)
