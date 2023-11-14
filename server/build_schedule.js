@@ -1,6 +1,16 @@
 
-import { MongoClient } from "mongodb";
-const client = new MongoClient('mongodb://127.0.0.1:27017');
+import { MongoClient } from "mongodb"
+const client = new MongoClient('mongodb://127.0.0.1:27017')
+
+const code_to_day = {
+    M: "Monday",
+    T: "Tuesday",
+    W: "Wednesday",
+    R: "Thursday",
+    F: "Friday",
+    S: "Saturday",
+    U: "Sunday",
+}
 
 /**
  * Given half of an OSU time range e.g '10' or '10:50a' (from '10-10:50a'),
@@ -10,23 +20,27 @@ const client = new MongoClient('mongodb://127.0.0.1:27017');
  * @returns {string}
  */
 function format_time(time, pm) {
-    // two cases: time is either a number like '10' or
-    // a time like '10:50a', handle both:
     if (!isNaN(time)) {
-        if (pm) {
-            return (parseInt(time)+12) * 60
+        if (pm && time == 12) {
+            return 12 * 60
         } else {
-            return parseInt(time) * 60
+            return (parseInt(time) % 12 + (pm ? 12 : 0)) * 60
         }
     } else {
         time = time.replace("a", "").replace("p", "").split(":")
-        if (pm) {
-            return (parseInt(time[0])+12) * 60 + parseInt(time[1])
-        } else {
-            return parseInt(time[0]) * 60 + parseInt(time[1])
+        var hours = parseInt(time[0])
+        var minutes = parseInt(time[1])
+
+        if (pm && hours !== 12) {
+            hours = (hours + 12) % 24
+        } else if (!pm && hours === 12) {
+            hours = 0
         }
+
+        return hours * 60 + minutes
     }
 }
+
 
 
 /**
@@ -50,7 +64,7 @@ export async function build_schedule(courses) {
     await client.connect()
 
     const course_times = []
-    const collection = client.db('osu-schedules').collection('courses');
+    const collection = client.db('osu-schedules').collection('courses')
 
     for (const course of courses) {
         const query = {course_name: course.course_name, term: course.term, schedule_type: course.schedule_type}
@@ -71,9 +85,36 @@ export async function build_schedule(courses) {
     }
 
     await client.close()
-    return (null || valid_combos)
+
+    let schedules = []
+    // Format times before sending to client
+    for (const schedule of valid_combos) {
+        let schedule_obj = []
+        for (const course of schedule) {
+            const [days, time] = course.course_time.split(" ")
+            for (const day of days) {
+                const [start_time, end_time] = time.split("-")
+                const pm = end_time.includes("p")
+                const formatted_start_time = format_time(start_time, pm)
+                const formatted_end_time = format_time(end_time, pm)
+    
+                schedule_obj.push({
+                    title: `${course.course_name}`,
+                    day: code_to_day[day],
+                    start: formatted_start_time,
+                    end: formatted_end_time,
+                })
+            }
+        }
+        schedules.push(schedule_obj)
+    }
+
+    console.log(schedules)
+
+    return (null || schedules)
 
 }
+
 /**
  * Given an array of OSU date and time ranges, returns true
  * if a valid schedule can be made, and false otherwise.
@@ -82,7 +123,7 @@ export async function build_schedule(courses) {
  * @returns {boolean}
  */
 function is_valid_schedule(schedule) {
-    const daysMap = { M: [], T: [], W: [], R: [], F: [], S: [], U: [] };
+    const daysMap = { M: [], T: [], W: [], R: [], F: [], S: [], U: [] }
     const course_times = []
 
     for (let course of schedule) {
@@ -90,33 +131,34 @@ function is_valid_schedule(schedule) {
     }
   
     course_times.forEach((course) => {
-      const [days, time] = course.split(" ");
+      const [days, time] = course.split(" ")
   
       for (const day of days) {
-        const [start_time, end_time] = time.split("-");
-        const pm = end_time.includes("p");
-        const formatted_start_time = format_time(start_time, pm);
-        const formatted_end_time = format_time(end_time, pm);
-        daysMap[day].push([formatted_start_time, formatted_end_time]);
+        const [start_time, end_time] = time.split("-")
+        const pm = end_time.includes("p")
+        const formatted_start_time = format_time(start_time, pm)
+        const formatted_end_time = format_time(end_time, pm)
+        console.log(time, formatted_start_time, formatted_end_time)
+        daysMap[day].push([formatted_start_time, formatted_end_time])
       }
-    });
+    })
   
-    const week = Object.values(daysMap);
+    const week = Object.values(daysMap)
   
     for (const day of week) {
-      const sorted = day.sort((a, b) => a[0] - b[0]);
+      const sorted = day.sort((a, b) => a[0] - b[0])
   
       for (let i = 0; i < sorted.length - 1; i++) {
-        const current = sorted[i];
-        const next = sorted[i + 1];
+        const current = sorted[i]
+        const next = sorted[i + 1]
   
         if (current[1] > next[0]) {
-          return false;
+          return false
         }
       }
     }
   
-    return true;
+    return true
   }
 
 /**
@@ -132,18 +174,18 @@ function is_valid_schedule(schedule) {
  */
 function cartesian(list, n = 0, result = [], current = []) {
     if (n === list.length) {
-        result.push(current);
+        result.push(current)
     } else {
-        const currentObj = list[n];
-        const currentList = Array.isArray(currentObj.course_time) ? currentObj.course_time : [currentObj.course_time];
+        const currentObj = list[n]
+        const currentList = Array.isArray(currentObj.course_time) ? currentObj.course_time : [currentObj.course_time]
 
         currentList.forEach(item => {
             cartesian(list, n + 1, result, [
                 ...current,
                 { course_name: currentObj.course_name, course_time: item, schedule_type: currentObj.schedule_type }
-            ]);
-        });
+            ])
+        })
     }
 
-    return result;
+    return result
 }

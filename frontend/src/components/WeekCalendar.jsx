@@ -1,13 +1,8 @@
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import React, {useState} from 'react'
-
-moment.updateLocale('en', {
-  week: {
-    dow: 1,
-  },
-})
+import React from 'react'
+import './WeekCalendar.css'
 
 const localizer = momentLocalizer(moment);
 

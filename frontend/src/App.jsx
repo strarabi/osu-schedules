@@ -15,13 +15,14 @@ const schedule_type_to_text = {
 }
 
 const term_name_to_code = {
-  "Winter 2022": "202402"
+  "Winter 2024": "202402"
 }
 
 function App() {
 
   const [courses, setCourses] = useState([])
   const [term, setTerm] = useState("")
+  const [schedules, setSchedules] = useState([])
 
   const getPrettyName = (course) => {
     return `${course.course_name} ${schedule_type_to_text[course.schedule_type]}`
@@ -32,7 +33,6 @@ function App() {
   }
 
   const handleCourseAdd = async(course) => {
-    console.log(term)
     if (course.schedule_type == 'A') {
         // if there exists a course with the same name and schedule type of C or D,
         // alert the user
@@ -61,7 +61,6 @@ function App() {
   const removeCourse = (course_name) => {
     setCourses(
       courses => courses.filter(function(course) {
-        console.log(course.course_name, course_name)
         return getPrettyName(course) !== course_name
       })
     )
@@ -73,8 +72,14 @@ function App() {
       headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, 
       body: JSON.stringify({courses: courses}), method: 'POST',
     });
-    const jsonData = await response.json()
-    alert(JSON.stringify(jsonData))
+    let schedule_response = await response.json()
+    for (let schedule of schedule_response) {
+      for (let course of schedule) {
+        course.start = moment().day(course.day).hour(Math.floor(course.start / 60)).minute(course.start % 60).toDate()
+        course.end = moment().day(course.day).hour(Math.floor(course.end / 60)).minute(course.end % 60).toDate()
+      }
+    }
+    setSchedules(schedule_response)
   }
 
   const course_objs = []
@@ -82,22 +87,14 @@ function App() {
     course_objs.push(<Course removeCourse={removeCourse} name={getPrettyName(course)}/>)
   }
 
-  let events =  [
-    {
-    title: 'Monday Event',
-    start: moment().day('Monday').hour(10).minute(0).second(0).toDate(),
-    end: moment().day('Monday').hour(12).minute(0).second(0).toDate(),
-    }
-  ]
-
   return (
     <div className='app-container'>
-      {/* <Navbar/>
+      <Navbar/>
       <h1 css={sloganStyles}>build your <br/>perfect schedule</h1>
       <CourseSearch clearCart={clearCart} callback={handleCourseAdd} setTerm={setTerm}/>
       <Cart courses={course_objs}/>
-      <button css = {buttonStyle} onClick={() => buildSchedule(courses)}>Generate schedule</button> */}
-      <WeekCalendar events={events}/>
+      <button css = {buttonStyle} onClick={() => buildSchedule(courses)}>Generate schedule</button>
+      <WeekCalendar events={schedules[0] ? schedules[0] : schedules}/>
     </div>
   )
 }
